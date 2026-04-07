@@ -1,9 +1,9 @@
-import { AsciiSignalStage } from "@/components/ascii/ascii-signal-stage";
+import { ShowcaseShell } from "@/components/showcase/showcase-shell";
 
 export default function Home() {
   return (
     <main className="min-h-screen w-full bg-black">
-      <AsciiSignalStage />
+      <ShowcaseShell />
     </main>
   );
 }

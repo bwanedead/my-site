@@ -1,19 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
-  --foreground: #eff5ff;
-  --signal: #9cfbd4;
-  --signal-cold: #86a9ff;
-  --signal-muted: #5f7098;
+  --background: #020201;
+  --foreground: #f4efdf;
+  --text-strong: #f6f1e4;
+  --text-soft: rgba(244, 239, 223, 0.82);
+  --text-dim: rgba(214, 204, 184, 0.62);
+  --panel-line: rgba(122, 247, 255, 0.22);
+  --panel-line-soft: rgba(244, 212, 86, 0.18);
+  --accent-yellow: #f4d456;
+  --accent-cyan: #7af7ff;
+  --accent-lilac: #d2c7ff;
+  --accent-rust: #8d3a1a;
+  --accent-rust-soft: #c46d3d;
+  --accent-rose: #ffc6d7;
+  --accent-mint: #bcf7d6;
+  --accent-peach: #f1c5a4;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-signal: var(--signal);
-  --color-signal-cold: var(--signal-cold);
-  --color-signal-muted: var(--signal-muted);
+  --color-text-strong: var(--text-strong);
+  --color-text-soft: var(--text-soft);
+  --color-text-dim: var(--text-dim);
+  --color-panel-line: var(--panel-line);
+  --color-panel-line-soft: var(--panel-line-soft);
+  --color-accent-yellow: var(--accent-yellow);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-lilac: var(--accent-lilac);
+  --color-accent-rust: var(--accent-rust);
+  --color-accent-rust-soft: var(--accent-rust-soft);
+  --color-accent-rose: var(--accent-rose);
+  --color-accent-mint: var(--accent-mint);
+  --color-accent-peach: var(--accent-peach);
   --font-mono: var(--font-ibm-plex-mono);
 }
 
@@ -32,4 +52,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-ibm-plex-mono), monospace;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(122, 247, 255, 0.24);
+  color: var(--text-strong);
 }

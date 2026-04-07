@@ -8,7 +8,7 @@ import {
 } from "./ascii-renderer";
 import styles from "./ascii-signal-stage.module.css";
 
-const FRAME_INTERVAL = 1000 / 18;
+const FRAME_INTERVAL = 1000 / 14;
 
 export function AsciiSignalStage() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -46,8 +46,8 @@ export function AsciiSignalStage() {
     const handlePointerMove = (event: PointerEvent) => {
       const bounds = stage.getBoundingClientRect();
 
-      pointer.targetX = ((event.clientX - bounds.left) / bounds.width) * 2 - 1;
-      pointer.targetY = ((event.clientY - bounds.top) / bounds.height) * 2 - 1;
+      pointer.targetX = (event.clientX / bounds.width) * 2 - 1;
+      pointer.targetY = (event.clientY / bounds.height) * 2 - 1;
     };
 
     const handlePointerLeave = () => {
@@ -57,8 +57,8 @@ export function AsciiSignalStage() {
 
     const observer = new ResizeObserver(handleResize);
     observer.observe(stage);
-    stage.addEventListener("pointermove", handlePointerMove);
-    stage.addEventListener("pointerleave", handlePointerLeave);
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerleave", handlePointerLeave);
     handleResize();
     renderAsciiFrame(context, metrics, 0, pointer);
 
@@ -81,8 +81,8 @@ export function AsciiSignalStage() {
     return () => {
       window.cancelAnimationFrame(frame);
       observer.disconnect();
-      stage.removeEventListener("pointermove", handlePointerMove);
-      stage.removeEventListener("pointerleave", handlePointerLeave);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerleave", handlePointerLeave);
     };
   }, []);
 
