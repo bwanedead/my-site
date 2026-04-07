@@ -16,39 +16,85 @@
 }
 
 .mobileNavigator {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 20;
-  padding: 0.8rem 0.8rem 0;
+  width: 4.8rem;
 }
 
 .mobileNavigatorInner {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem 0.8rem;
-  border: 1px solid var(--panel-line-soft);
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.38));
-  padding: 0.8rem;
-  backdrop-filter: blur(18px);
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.4rem 0;
 }
 
 .mobileNavItem {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  border: 1px solid transparent;
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 0.35rem;
   color: var(--text-dim);
-  padding: 0.55rem 0.7rem;
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  white-space: normal;
+  padding: 0.48rem 0.5rem 0.56rem 0.35rem;
+  transition:
+    transform 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+.mobileNavItem::before {
+  position: absolute;
+  left: 0;
+  top: 0.15rem;
+  bottom: 0.15rem;
+  width: 1px;
+  content: "";
+  background: color-mix(in srgb, currentColor 36%, transparent);
+  opacity: 0.42;
+}
+
+.mobileNavItem::after {
+  position: absolute;
+  inset: 0.15rem 0 0.15rem -0.1rem;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, currentColor 8%, transparent),
+    transparent 82%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mobileNavItem:hover {
+  transform: translateX(3px);
 }
 
 .mobileNavItemActive {
-  border-color: currentColor;
   color: var(--text-strong);
-  background: color-mix(in srgb, currentColor 10%, transparent);
+  transform: translateX(4px);
+}
+
+.mobileNavItemActive::after {
+  opacity: 1;
+}
+
+.mobileNavIndex {
+  display: block;
+  font-size: 0.52rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.mobileNavGlyphStack {
+  position: relative;
+  width: fit-content;
+}
+
+.mobileNavWordmark {
+  font-size: 0.12rem;
+  line-height: 0.88;
 }
 
 .desktopRail {
@@ -220,7 +266,7 @@
   min-height: 100svh;
   display: flex;
   align-items: center;
-  padding: 5rem 1.2rem 4rem;
+  padding: 5rem 1.2rem 4rem 5.6rem;
 }
 
 .projectSection::before {
@@ -234,7 +280,7 @@
 
 .projectSection::after {
   position: absolute;
-  left: 1.2rem;
+  left: 5.6rem;
   right: 1.2rem;
   top: 0;
   height: 1px;
