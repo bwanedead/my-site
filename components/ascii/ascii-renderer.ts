@@ -340,7 +340,6 @@ function sampleColor(sample: ResonanceSample, alpha: number) {
 
   return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${boostedAlpha})`;
 }
-
 function mixColor(
   from: [number, number, number],
   to: [number, number, number],
