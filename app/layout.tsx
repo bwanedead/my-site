@@ -11,6 +11,14 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Signal/Frame",
   description: "Animated ASCII signal space for the site foundation.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.jpg", type: "image/jpeg" },
+    ],
+    apple: [{ url: "/apple-icon.jpg", type: "image/jpeg" }],
+    shortcut: ["/favicon.ico"],
+  },
 };
 
 export default function RootLayout({
