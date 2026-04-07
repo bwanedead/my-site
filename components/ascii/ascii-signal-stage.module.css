@@ -1,0 +1,102 @@
+.stage {
+  position: relative;
+  min-height: 100svh;
+  width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at center, rgba(9, 14, 24, 0.82) 0%, rgba(2, 4, 8, 0.34) 34%, transparent 58%),
+    #000;
+}
+
+.canvas {
+  position: absolute;
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  image-rendering: pixelated;
+  opacity: 0.98;
+}
+
+.glow {
+  position: absolute;
+  inset: -16%;
+  background:
+    radial-gradient(circle at 50% 47%, rgba(134, 169, 255, 0.18) 0%, rgba(134, 169, 255, 0.08) 18%, rgba(158, 251, 213, 0.1) 27%, transparent 54%);
+  filter: blur(58px);
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+
+.beam {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(158, 251, 213, 0.05) 42%,
+    rgba(104, 164, 255, 0.08) 50%,
+    rgba(158, 251, 213, 0.05) 58%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  animation: beam-drift 16s ease-in-out infinite;
+}
+
+.scan {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.042) 0 1px,
+      transparent 1px 4px
+    );
+  opacity: 0.08;
+  mix-blend-mode: screen;
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.24) 0 0.55px, transparent 0.7px),
+    radial-gradient(circle at 70% 36%, rgba(255, 255, 255, 0.2) 0 0.55px, transparent 0.72px),
+    radial-gradient(circle at 40% 72%, rgba(255, 255, 255, 0.14) 0 0.5px, transparent 0.68px);
+  background-size: 150px 150px, 210px 210px, 180px 180px;
+  opacity: 0.09;
+  mix-blend-mode: screen;
+  animation: noise-drift 22s linear infinite;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, transparent 28%, rgba(0, 0, 0, 0.16) 56%, rgba(0, 0, 0, 0.78) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 22%, transparent 78%, rgba(0, 0, 0, 0.7));
+}
+
+@keyframes noise-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-12px, 8px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes beam-drift {
+  0%,
+  100% {
+    opacity: 0.14;
+    transform: translateY(-3%);
+  }
+  50% {
+    opacity: 0.22;
+    transform: translateY(3%);
+  }
+}
