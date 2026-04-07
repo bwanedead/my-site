@@ -44,6 +44,7 @@
 html {
   background: var(--background);
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 body {
@@ -53,6 +54,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-ibm-plex-mono), monospace;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
 a {

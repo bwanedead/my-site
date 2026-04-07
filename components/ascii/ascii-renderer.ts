@@ -39,6 +39,7 @@ type ResonanceSample = {
   ridge: number;
   dust: number;
   drift: number;
+  ambient: number;
   warmth: number;
   angle: number;
   x: number;
@@ -209,6 +210,11 @@ function sampleResonanceField(x: number, y: number, frame: ResonanceFrame) {
   const drift =
     0.5 +
     0.5 * Math.sin((warpedX * warpedY) * 18 + frame.time * 0.82 + field * 7.4);
+  const ambient =
+    0.5 +
+    0.5 *
+      Math.sin(warpedX * 10.8 + frame.time * 0.15 + field * 2.2) *
+      Math.cos(warpedY * 12.2 - frame.time * 0.18);
   const warmth =
     0.5 + 0.5 * Math.sin(frame.time * 0.18 + warpedX * 5.3 - warpedY * 3.4 + field * 2.1);
   const falloff = 1 - smoothStep(1.08, 1.95, Math.hypot(warpedX * 0.84, warpedY * 1.06));
@@ -217,7 +223,8 @@ function sampleResonanceField(x: number, y: number, frame: ResonanceFrame) {
     ridge * 0.94 +
     node * (0.16 + dust * 0.18) +
     drift * node * 0.1 +
-    smoothStep(0.88, 1, dust) * node * 0.18;
+    smoothStep(0.88, 1, dust) * node * 0.18 +
+    ambient * 0.026;
 
   intensity = clamp(intensity * (falloff * 0.94 + 0.06), 0, 1);
 
@@ -228,6 +235,7 @@ function sampleResonanceField(x: number, y: number, frame: ResonanceFrame) {
     ridge,
     dust,
     drift,
+    ambient,
     warmth,
     angle: Math.atan2(deltaY, deltaX),
     x: warpedX,
@@ -267,7 +275,15 @@ function selectGlyph(sample: ResonanceSample, time: number) {
   );
 
   if (sample.intensity < 0.04) {
-    return sample.dust > 0.997 ? DUST_GLYPHS[phase % DUST_GLYPHS.length] : " ";
+    if (sample.dust > 0.992) {
+      return DUST_GLYPHS[phase % DUST_GLYPHS.length];
+    }
+
+    if (sample.ambient > 0.66) {
+      return QUIET_GLYPHS[phase % QUIET_GLYPHS.length];
+    }
+
+    return " ";
   }
 
   if (sample.ridge > 0.82 && sample.node > 0.52) {
@@ -295,7 +311,7 @@ function selectGlyph(sample: ResonanceSample, time: number) {
     return WAVE_GLYPHS[phase % WAVE_GLYPHS.length];
   }
 
-  if (sample.dust > 0.8) {
+  if (sample.dust > 0.76 || sample.ambient > 0.72) {
     return DUST_GLYPHS[phase % DUST_GLYPHS.length];
   }
 
@@ -320,7 +336,9 @@ function sampleColor(sample: ResonanceSample, alpha: number) {
     clamp((sample.intensity - 0.74) * 2.4 + sample.glow * 0.22, 0, 1),
   );
 
-  return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
+  const boostedAlpha = clamp(alpha + sample.ambient * 0.028, 0.04, 0.98);
+
+  return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${boostedAlpha})`;
 }
 
 function mixColor(

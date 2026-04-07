@@ -1,6 +1,7 @@
 .shell {
   position: relative;
   min-height: 100svh;
+  overflow-x: clip;
 }
 
 .content {
@@ -11,6 +12,7 @@
   width: 100%;
   max-width: 120rem;
   grid-template-columns: minmax(0, 1fr);
+  overflow-x: clip;
 }
 
 .mobileNavigator {
@@ -22,17 +24,12 @@
 
 .mobileNavigatorInner {
   display: flex;
-  gap: 0.6rem;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  gap: 0.6rem 0.8rem;
   border: 1px solid var(--panel-line-soft);
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.38));
   padding: 0.8rem;
-  scrollbar-width: none;
   backdrop-filter: blur(18px);
-}
-
-.mobileNavigatorInner::-webkit-scrollbar {
-  display: none;
 }
 
 .mobileNavItem {
@@ -45,7 +42,7 @@
   font-size: 0.68rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .mobileNavItemActive {
@@ -250,6 +247,7 @@
   position: relative;
   z-index: 1;
   max-width: 54rem;
+  min-width: 0;
 }
 
 .sectionIndex {
@@ -259,17 +257,13 @@
   text-transform: uppercase;
 }
 
-.sectionTitle {
-  margin: 0.85rem 0 0;
-  color: var(--text-strong);
-  font-size: clamp(3.2rem, 11vw, 8.5rem);
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  line-height: 0.92;
-  text-transform: uppercase;
-  text-shadow:
-    0 0 24px color-mix(in srgb, var(--section-accent) 20%, transparent),
-    0 0 60px color-mix(in srgb, var(--section-accent) 8%, transparent);
+.sectionTitleStack {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  overflow: hidden;
+  margin-top: 0.9rem;
+  padding-right: 0.25rem;
 }
 
 .screenReaderOnly {
@@ -292,10 +286,30 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: pre;
+  max-width: 100%;
 }
 
 .wordmarkWide {
   font-size: clamp(0.16rem, 0.18vw, 0.21rem);
+}
+
+.sectionWordmark {
+  margin: 0;
+  font-size: clamp(0.28rem, 0.52vw, 0.56rem);
+  line-height: 0.92;
+}
+
+.sectionWordmark.wordmarkWide {
+  font-size: clamp(0.21rem, 0.42vw, 0.44rem);
+}
+
+.sectionWordmarkGhost {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  transform: translate(0.3rem, -0.14rem);
+  filter: blur(0.35px);
+  animation: header-ghost 5.8s ease-in-out infinite;
 }
 
 .toneYellow {
@@ -420,6 +434,16 @@
   }
   80% {
     transform: translate(1px, 2px);
+  }
+}
+
+@keyframes header-ghost {
+  0%,
+  100% {
+    transform: translate(0.3rem, -0.14rem);
+  }
+  50% {
+    transform: translate(0.42rem, -0.04rem);
   }
 }
 
