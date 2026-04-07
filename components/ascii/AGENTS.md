@@ -21,3 +21,5 @@ This directory owns the ASCII visual layer for the site.
 - Tune character sets, field math, and overlays deliberately.
 - Avoid introducing route-specific assumptions here.
 - Document non-obvious performance constraints if the renderer becomes more complex.
+- Keep diagnostics and observability sidecars separate from the renderer math.
+- If multiple canvases are stacked, upper layers must stay transparent if lower layers are meant to remain visible.

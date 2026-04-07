@@ -15,6 +15,19 @@ export type AsciiMetrics = {
   aspect: number;
 };
 
+export type AsciiResizeOptions = {
+  densityScale?: number;
+  dprCap?: number;
+};
+
+export type AsciiFrameStats = {
+  glyphCount: number;
+  coverage: number;
+  meanAlpha: number;
+  peakAlpha: number;
+  meanEnergy: number;
+};
+
 type ResonanceMode = {
   a: number;
   b: number;
@@ -41,7 +54,8 @@ type ResonanceSample = {
   drift: number;
   ambient: number;
   warmth: number;
-  angle: number;
+  dirX: number;
+  dirY: number;
   x: number;
   y: number;
 };
@@ -67,15 +81,18 @@ const RESONANCE_MODES: ResonanceMode[] = [
 export function resizeAsciiCanvas(
   canvas: HTMLCanvasElement,
   bounds: Pick<DOMRectReadOnly, "width" | "height">,
+  options: AsciiResizeOptions = {},
 ) {
+  const { densityScale = 1, dprCap = 1.2 } = options;
   const width = Math.max(320, Math.floor(bounds.width));
   const height = Math.max(320, Math.floor(bounds.height));
-  const dpr = Math.min(window.devicePixelRatio || 1, 1.8);
+  const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
 
   canvas.width = Math.floor(width * dpr);
   canvas.height = Math.floor(height * dpr);
 
-  const targetCellWidth = clamp(width / 160, 5.4, 8.4);
+  const minimumCellWidth = densityScale > 1 ? 4.8 : 5.4;
+  const targetCellWidth = clamp(width / (160 * densityScale), minimumCellWidth, 8.4);
   const cols = Math.max(84, Math.floor(width / targetCellWidth));
   const rows = Math.max(50, Math.floor(height / (targetCellWidth * 1.08)));
   const cellWidth = width / cols;
@@ -103,11 +120,16 @@ export function renderAsciiFrame(
   const frame = createResonanceFrame(time, pointer);
 
   ctx.setTransform(metrics.dpr, 0, 0, metrics.dpr, 0, 0);
-  paintBackdrop(ctx, metrics, frame);
+  ctx.clearRect(0, 0, metrics.width, metrics.height);
 
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.font = `600 ${metrics.fontSize}px "IBM Plex Mono", monospace`;
+
+  let glyphCount = 0;
+  let alphaTotal = 0;
+  let peakAlpha = 0;
+  let energyTotal = 0;
 
   for (let row = 0; row < metrics.rows; row += 1) {
     const y = (row + 0.5) * metrics.cellHeight;
@@ -119,6 +141,7 @@ export function renderAsciiFrame(
       const nx = col / (metrics.cols - 1);
       const centeredX = (nx * 2 - 1) * metrics.aspect;
       const sample = sampleResonanceField(centeredX, centeredY, frame);
+      energyTotal += sample.intensity + sample.ambient * 0.08;
       const glyph = selectGlyph(sample, time);
 
       if (glyph === " ") {
@@ -126,20 +149,32 @@ export function renderAsciiFrame(
       }
 
       const alpha = clamp(sample.intensity * 1.06 + sample.glow * 0.16, 0.06, 0.98);
+      const effectiveAlpha = clamp(alpha + sample.ambient * 0.028, 0.04, 0.98);
 
       if (sample.glow > 0.3) {
         ctx.shadowBlur = 10 + sample.glow * 22;
-        ctx.shadowColor = sampleColor(sample, clamp(alpha * 0.42, 0.16, 0.48));
+        ctx.shadowColor = sampleColor(sample, clamp(effectiveAlpha * 0.42, 0.16, 0.48));
       } else {
         ctx.shadowBlur = 0;
       }
 
-      ctx.fillStyle = sampleColor(sample, alpha);
+      glyphCount += 1;
+      alphaTotal += effectiveAlpha;
+      peakAlpha = Math.max(peakAlpha, effectiveAlpha);
+      ctx.fillStyle = sampleColor(sample, effectiveAlpha);
       ctx.fillText(glyph, x, y);
     }
   }
 
   ctx.shadowBlur = 0;
+
+  return {
+    glyphCount,
+    coverage: glyphCount / (metrics.cols * metrics.rows),
+    meanAlpha: glyphCount === 0 ? 0 : alphaTotal / glyphCount,
+    peakAlpha,
+    meanEnergy: energyTotal / (metrics.cols * metrics.rows),
+  } satisfies AsciiFrameStats;
 }
 
 function createResonanceFrame(time: number, pointer: PointerSignal): ResonanceFrame {
@@ -158,30 +193,6 @@ function createResonanceFrame(time: number, pointer: PointerSignal): ResonanceFr
   };
 }
 
-function paintBackdrop(
-  ctx: CanvasRenderingContext2D,
-  metrics: AsciiMetrics,
-  frame: ResonanceFrame,
-) {
-  const gradient = ctx.createRadialGradient(
-    metrics.width * (0.5 + frame.pointer.x * 0.04),
-    metrics.height * (0.48 + frame.pointer.y * 0.025),
-    0,
-    metrics.width * 0.5,
-    metrics.height * 0.5,
-    metrics.width * 0.78,
-  );
-
-  gradient.addColorStop(0, "rgb(18 16 10)");
-  gradient.addColorStop(0.24, "rgb(7 12 12)");
-  gradient.addColorStop(0.48, "rgb(10 7 5)");
-  gradient.addColorStop(0.76, "rgb(3 3 3)");
-  gradient.addColorStop(1, "rgb(0 0 0)");
-
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, metrics.width, metrics.height);
-}
-
 function sampleResonanceField(x: number, y: number, frame: ResonanceFrame) {
   const warpedX =
     x +
@@ -195,16 +206,29 @@ function sampleResonanceField(x: number, y: number, frame: ResonanceFrame) {
     frame.pointer.y * 0.08 * (1 - clamp(Math.abs(x) * 0.34, 0, 0.34));
 
   const field = mixedResonance(warpedX, warpedY, frame);
-  const epsilon = 0.014;
-  const deltaX =
-    mixedResonance(warpedX + epsilon, warpedY, frame) -
-    mixedResonance(warpedX - epsilon, warpedY, frame);
-  const deltaY =
-    mixedResonance(warpedX, warpedY + epsilon, frame) -
-    mixedResonance(warpedX, warpedY - epsilon, frame);
-
-  const gradientMagnitude = clamp(Math.hypot(deltaX, deltaY) * 0.42, 0, 1);
   const node = Math.exp(-Math.abs(field) * 18);
+  let gradientMagnitude = 0;
+  let dirX = 1;
+  let dirY = 0;
+
+  if (node > 0.014) {
+    const epsilon = 0.014;
+    const deltaX =
+      mixedResonance(warpedX + epsilon, warpedY, frame) -
+      mixedResonance(warpedX - epsilon, warpedY, frame);
+    const deltaY =
+      mixedResonance(warpedX, warpedY + epsilon, frame) -
+      mixedResonance(warpedX, warpedY - epsilon, frame);
+    const magnitude = Math.hypot(deltaX, deltaY);
+
+    gradientMagnitude = clamp(magnitude * 0.42, 0, 1);
+
+    if (magnitude > 0.0001) {
+      dirX = deltaX / magnitude;
+      dirY = deltaY / magnitude;
+    }
+  }
+
   const ridge = clamp(node * (0.4 + gradientMagnitude * 1.1), 0, 1);
   const dust = hash2D(warpedX * 142 + frame.time * 0.2, warpedY * 128 - frame.time * 0.17);
   const drift =
@@ -237,7 +261,8 @@ function sampleResonanceField(x: number, y: number, frame: ResonanceFrame) {
     drift,
     ambient,
     warmth,
-    angle: Math.atan2(deltaY, deltaX),
+    dirX,
+    dirY,
     x: warpedX,
     y: warpedY,
   } satisfies ResonanceSample;
@@ -291,8 +316,8 @@ function selectGlyph(sample: ResonanceSample, time: number) {
   }
 
   if (sample.node > 0.56) {
-    const directionX = Math.cos(sample.angle);
-    const directionY = Math.sin(sample.angle);
+    const directionX = sample.dirX;
+    const directionY = sample.dirY;
 
     if (Math.abs(directionX) > 0.86) {
       return HORIZONTAL_GLYPHS[phase % HORIZONTAL_GLYPHS.length];
@@ -336,9 +361,7 @@ function sampleColor(sample: ResonanceSample, alpha: number) {
     clamp((sample.intensity - 0.74) * 2.4 + sample.glow * 0.22, 0, 1),
   );
 
-  const boostedAlpha = clamp(alpha + sample.ambient * 0.028, 0.04, 0.98);
-
-  return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${boostedAlpha})`;
+  return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
 }
 function mixColor(
   from: [number, number, number],

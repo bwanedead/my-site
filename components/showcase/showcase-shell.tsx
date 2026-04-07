@@ -1,4 +1,5 @@
 import { AsciiSignalStage } from "@/components/ascii/ascii-signal-stage";
+import { AsciiDiagnosticsPanel } from "@/components/ascii/ascii-diagnostics-panel";
 import styles from "./showcase-shell.module.css";
 import { ProjectNavigator } from "./project-navigator";
 import { showcaseProjects } from "./project-data";
@@ -8,6 +9,7 @@ export function ShowcaseShell() {
   return (
     <div className={styles.shell}>
       <AsciiSignalStage />
+      <AsciiDiagnosticsPanel />
       <div className={styles.content}>
         <ProjectNavigator projects={showcaseProjects} />
         <div className={styles.sections}>

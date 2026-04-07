@@ -5,18 +5,27 @@
   isolation: isolate;
   pointer-events: none;
   background:
-    radial-gradient(circle at 48% 44%, rgba(244, 212, 86, 0.08) 0%, transparent 20%),
-    radial-gradient(circle at 52% 48%, rgba(105, 248, 255, 0.1) 0%, transparent 28%),
-    radial-gradient(circle at 42% 58%, rgba(141, 58, 26, 0.16) 0%, rgba(10, 7, 5, 0.14) 34%, transparent 64%),
+    radial-gradient(circle at 52% 46%, rgba(118, 212, 220, 0.048) 0%, transparent 24%),
+    radial-gradient(circle at 34% 72%, rgba(120, 46, 22, 0.078) 0%, rgba(10, 6, 5, 0.05) 34%, transparent 62%),
+    radial-gradient(circle at 74% 22%, rgba(242, 214, 112, 0.024) 0%, transparent 18%),
     #000;
 }
 
+.substrateCanvas,
 .canvas {
   position: absolute;
   inset: -3%;
   width: 106%;
   height: 106%;
   image-rendering: pixelated;
+}
+
+.substrateCanvas {
+  opacity: 0.84;
+  filter: contrast(1.02) saturate(0.94);
+}
+
+.canvas {
   opacity: 1;
   filter: contrast(1.16) saturate(1.08);
 }
@@ -25,10 +34,10 @@
   position: absolute;
   inset: -16%;
   background:
-    radial-gradient(circle at 46% 46%, rgba(112, 247, 255, 0.2) 0%, rgba(112, 247, 255, 0.1) 14%, rgba(244, 212, 86, 0.1) 24%, rgba(196, 109, 61, 0.08) 34%, transparent 58%);
-  filter: blur(68px);
+    radial-gradient(circle at 46% 46%, rgba(112, 247, 255, 0.12) 0%, rgba(112, 247, 255, 0.06) 14%, rgba(244, 212, 86, 0.05) 24%, rgba(196, 109, 61, 0.05) 34%, transparent 58%);
+  filter: blur(74px);
   mix-blend-mode: screen;
-  opacity: 1;
+  opacity: 0.9;
 }
 
 .beam {
@@ -37,9 +46,9 @@
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(244, 212, 86, 0.06) 36%,
-    rgba(112, 247, 255, 0.1) 50%,
-    rgba(244, 212, 86, 0.06) 64%,
+    rgba(244, 212, 86, 0.028) 36%,
+    rgba(112, 247, 255, 0.05) 50%,
+    rgba(244, 212, 86, 0.028) 64%,
     transparent 100%
   );
   mix-blend-mode: screen;
@@ -55,7 +64,7 @@
       rgba(255, 255, 255, 0.042) 0 1px,
       transparent 1px 4px
     );
-  opacity: 0.08;
+  opacity: 0.06;
   mix-blend-mode: screen;
 }
 
@@ -67,7 +76,7 @@
     radial-gradient(circle at 70% 36%, rgba(255, 255, 255, 0.2) 0 0.55px, transparent 0.72px),
     radial-gradient(circle at 40% 72%, rgba(255, 255, 255, 0.14) 0 0.5px, transparent 0.68px);
   background-size: 150px 150px, 210px 210px, 180px 180px;
-  opacity: 0.055;
+  opacity: 0.04;
   mix-blend-mode: screen;
   animation: noise-drift 22s linear infinite;
 }
@@ -76,8 +85,8 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at center, transparent 22%, rgba(0, 0, 0, 0.24) 52%, rgba(0, 0, 0, 0.86) 100%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.72), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.8));
+    radial-gradient(circle at center, transparent 22%, rgba(0, 0, 0, 0.16) 52%, rgba(0, 0, 0, 0.84) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.68), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.78));
 }
 
 @keyframes noise-drift {

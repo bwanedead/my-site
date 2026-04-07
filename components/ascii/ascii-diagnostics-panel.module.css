@@ -1,0 +1,164 @@
+.panel {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  width: min(28rem, calc(100vw - 2rem));
+  max-height: calc(100svh - 2rem);
+  overflow: auto;
+  border: 1px solid rgba(112, 198, 208, 0.28);
+  background:
+    linear-gradient(180deg, rgba(2, 5, 6, 0.94), rgba(2, 2, 2, 0.94)),
+    #020202;
+  box-shadow:
+    0 0 0 1px rgba(247, 213, 82, 0.08),
+    0 24px 80px rgba(0, 0, 0, 0.58);
+  color: rgba(244, 239, 223, 0.94);
+  padding: 1rem;
+  font-family: var(--font-ibm-plex-mono), monospace;
+  pointer-events: auto;
+  backdrop-filter: blur(20px);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.kicker,
+.subhead,
+.layerName,
+.score,
+.logHeading {
+  margin: 0;
+}
+
+.kicker {
+  color: var(--accent-yellow);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+}
+
+.subhead {
+  margin-top: 0.35rem;
+  color: var(--text-dim);
+  font-size: 0.68rem;
+}
+
+.closeButton {
+  border: 1px solid rgba(247, 213, 82, 0.28);
+  background: rgba(247, 213, 82, 0.06);
+  color: var(--foreground);
+  padding: 0.45rem 0.65rem;
+  font: inherit;
+  letter-spacing: 0.16em;
+}
+
+.metaGrid,
+.metricList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 0.85rem;
+}
+
+.metaGrid {
+  margin: 1rem 0 0;
+}
+
+.metaGrid dt,
+.metricList dt {
+  color: var(--text-dim);
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.metaGrid dd,
+.metricList dd {
+  margin: 0.18rem 0 0;
+  font-size: 0.74rem;
+}
+
+.layers {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.summaryCard,
+.layerCard,
+.logCard {
+  border: 1px solid rgba(112, 198, 208, 0.16);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.85rem;
+}
+
+.summaryCard {
+  margin-top: 1rem;
+}
+
+.layerHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.layerName {
+  color: var(--accent-cyan);
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.score {
+  color: var(--accent-peach);
+  font-size: 0.7rem;
+}
+
+.metricList {
+  margin-top: 0.8rem;
+}
+
+.warningList,
+.logList {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.warningList {
+  margin-top: 0.8rem;
+  color: #ffcfb7;
+  font-size: 0.72rem;
+}
+
+.okState,
+.emptyState {
+  margin: 0.8rem 0 0;
+  color: var(--text-dim);
+  font-size: 0.72rem;
+}
+
+.logHeading {
+  color: var(--accent-lilac);
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.logList {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  padding-left: 0;
+  list-style: none;
+}
+
+.logItem {
+  display: grid;
+  gap: 0.15rem;
+  color: rgba(244, 239, 223, 0.84);
+  font-size: 0.68rem;
+}
