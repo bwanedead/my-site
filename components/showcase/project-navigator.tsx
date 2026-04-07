@@ -59,8 +59,20 @@ export function ProjectNavigator({ projects }: ProjectNavigatorProps) {
                 activeId === project.id ? styles.mobileNavItemActive : "",
               ].join(" ")}
             >
-              <span>{project.index}</span>
-              <span>{project.name}</span>
+              <span className={styles.mobileNavIndex}>{project.index}</span>
+              <span className={styles.screenReaderOnly}>{project.name}</span>
+              <div className={styles.mobileNavGlyphStack} aria-hidden="true">
+                <AsciiWordmark
+                  text={compactLabel(project.name)}
+                  tone={project.tone}
+                  className={`${styles.navWordmark} ${styles.mobileNavWordmark}`}
+                />
+                <AsciiWordmark
+                  text={compactLabel(project.name)}
+                  tone={project.tone}
+                  className={`${styles.navWordmark} ${styles.mobileNavWordmark} ${styles.navGhost}`}
+                />
+              </div>
             </Link>
           ))}
         </div>
@@ -113,4 +125,14 @@ export function ProjectNavigator({ projects }: ProjectNavigatorProps) {
 
 function capitalizeTone(value: ShowcaseProject["tone"]) {
   return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function compactLabel(name: string) {
+  const words = name.split(/\s+/).filter(Boolean);
+
+  if (words.length > 1) {
+    return words.map((word) => word[0]).join("").slice(0, 3);
+  }
+
+  return name.replace(/[^A-Z]/gi, "").slice(0, 3);
 }
